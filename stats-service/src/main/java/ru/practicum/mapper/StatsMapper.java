@@ -33,14 +33,6 @@ public class StatsMapper {
         return statsDto;
     }
 
-    public static List<StatsDto> toStatsDtos(Iterable<Stats> stats) {
-        List<StatsDto> result = new ArrayList<>();
-        for (Stats stat : stats) {
-            result.add(toStatsDto(stat));
-        }
-        return result;
-    }
-
     public static List<HitDto> toHitDto(Map<Hits, Integer> hits) {
         List<HitDto> result = new ArrayList<>();
         for (Hits hit : hits.keySet()) {

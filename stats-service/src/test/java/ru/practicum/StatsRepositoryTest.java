@@ -30,7 +30,7 @@ public class StatsRepositoryTest {
     }
 
     @Test
-    void findByTimestampIsAfterAndTimestampIsBefore() {
+    void findByTimestampIsAfterAndTimestampIsBefore_GetAll() {
 
         Application application = new Application(1, "ewm-main-service");
         application = applicationRepository.save(application);
@@ -47,14 +47,14 @@ public class StatsRepositoryTest {
 
         List<Stats> statsList = List.of(firstStat, secondStat, thirdStat);
         List<Stats> actualStats = statsRepository.findByTimestampIsAfterAndTimestampIsBefore(
-                LocalDateTime.of(2020, 05, 05, 00, 00, 00),
-                LocalDateTime.of(2035, 05, 05, 00, 00, 00));
+                LocalDateTime.of(2023, 05, 05, 00, 00, 00),
+                LocalDateTime.of(2025, 05, 05, 00, 00, 00));
 
         assertEquals(statsList, actualStats);
     }
 
     @Test
-    void findByTimestampIsAfterAndTimestampIsBeforeAndUriIn() {
+    void findByTimestampIsAfterAndTimestampIsBeforeAndUriIn_GetAll() {
 
         Application application = new Application(1, "ewm-main-service");
         application = applicationRepository.save(application);
@@ -73,58 +73,67 @@ public class StatsRepositoryTest {
 
         List<Stats> statsList = List.of(firstStat, secondStat, thirdStat);
         List<Stats> actualStats = statsRepository.findByTimestampIsAfterAndTimestampIsBeforeAndUriIn(
-                LocalDateTime.of(2020, 05, 05, 00, 00, 00),
-                LocalDateTime.of(2035, 05, 05, 00, 00, 00), uris);
+                LocalDateTime.of(2023, 05, 05, 00, 00, 00),
+                LocalDateTime.of(2024, 05, 05, 00, 00, 00), uris);
 
         assertEquals(statsList, actualStats);
     }
 
     @Test
-    void findByTimestampIsAfterAndTimestampIsBeforeDistinctByIp() {
+    void findByTimestampIsAfterAndTimestampIsBefore_GetByTime() {
 
         Application application = new Application(1, "ewm-main-service");
         application = applicationRepository.save(application);
 
         Stats firstStat = new Stats(null, application, "/events/1",
-                "192.163.0.1", LocalDateTime.now());
-        firstStat = statsRepository.save(firstStat);
+                "192.163.0.1", LocalDateTime.now().minusYears(3));
+        statsRepository.save(firstStat);
         Stats secondStat = new Stats(null, application, "/events/2",
                 "192.163.0.2", LocalDateTime.now());
-        secondStat = statsRepository.save(secondStat);
+        statsRepository.save(secondStat);
         Stats thirdStat = new Stats(null, application, "/events/3",
                 "192.163.0.2", LocalDateTime.now());
-        thirdStat = statsRepository.save(thirdStat);
+        statsRepository.save(thirdStat);
+        Stats fourthStat = new Stats(null, application, "/events/3",
+                "192.163.0.2", LocalDateTime.now().plusYears(5));
+        statsRepository.save(fourthStat);
 
-        List<Stats> statsList = List.of(firstStat, secondStat, thirdStat);
-        List<Stats> actualStats = statsRepository.findByTimestampIsAfterAndTimestampIsBeforeDistinctByIp(
-                LocalDateTime.of(2020, 05, 05, 00, 00, 00),
-                LocalDateTime.of(2035, 05, 05, 00, 00, 00));
+        List<Stats> expectedStats = List.of(secondStat, thirdStat);
 
-        assertEquals(statsList, actualStats);
+        List<Stats> actualStats = statsRepository.findByTimestampIsAfterAndTimestampIsBefore(
+                LocalDateTime.of(2023, 05, 05, 00, 00, 00),
+                LocalDateTime.of(2024, 05, 05, 00, 00, 00));
+
+        assertEquals(actualStats, expectedStats);
     }
 
     @Test
-    void findByTimestampIsAfterAndTimestampIsBeforeAndUriInDistinctByIp() {
+    void findByTimestampIsAfterAndTimestampIsBeforeAndUriIn_GetByUri() {
+
         Application application = new Application(1, "ewm-main-service");
         application = applicationRepository.save(application);
 
-        List<String> uris = List.of("/events/1", "/events/2", "/events/3");
+        List<String> uris = List.of("/events/1");
 
         Stats firstStat = new Stats(null, application, "/events/1",
                 "192.163.0.1", LocalDateTime.now());
-        firstStat = statsRepository.save(firstStat);
+        statsRepository.save(firstStat);
         Stats secondStat = new Stats(null, application, "/events/2",
                 "192.163.0.2", LocalDateTime.now());
-        secondStat = statsRepository.save(secondStat);
+        statsRepository.save(secondStat);
         Stats thirdStat = new Stats(null, application, "/events/3",
                 "192.163.0.2", LocalDateTime.now());
-        thirdStat = statsRepository.save(thirdStat);
+        statsRepository.save(thirdStat);
+        Stats fourthStat = new Stats(null, application, "/events/3",
+                "192.163.0.2", LocalDateTime.now());
+        statsRepository.save(fourthStat);
 
-        List<Stats> statsList = List.of(firstStat, secondStat, thirdStat);
-        List<Stats> actualStats = statsRepository.findByTimestampIsAfterAndTimestampIsBeforeAndUriInDistinctByIp(
-                LocalDateTime.of(2020, 05, 05, 00, 00, 00),
-                LocalDateTime.of(2035, 05, 05, 00, 00, 00), uris);
+        List<Stats> expectedStats = List.of(firstStat);
 
-        assertEquals(statsList, actualStats);
+        List<Stats> actualStats = statsRepository.findByTimestampIsAfterAndTimestampIsBeforeAndUriIn(
+                LocalDateTime.of(2023, 05, 05, 00, 00, 00),
+                LocalDateTime.of(2024, 05, 05, 00, 00, 00), uris);
+
+        assertEquals(actualStats, expectedStats);
     }
 }

@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class StatsController {
     private final StatsService statsService;
+    private static Comparator<HitDto> comparator = Comparator.comparing(HitDto::getHits).reversed();
 
 
     @PostMapping("/hit")
@@ -35,8 +36,7 @@ public class StatsController {
                                  @RequestParam(value = "uris", required = false) List<String> uris,
                                  @RequestParam(value = "unique", defaultValue = "false") boolean unique) {
         List<HitDto> hits = StatsMapper.toHitDto(statsService.getStats(start, end, uris, unique));
-        Comparator<HitDto> comparator = Comparator.comparing(HitDto::getHits);
-        ArrayList<HitDto> sortedHits = hits.stream().sorted(comparator.reversed()).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<HitDto> sortedHits = hits.stream().sorted(comparator).collect(Collectors.toCollection(ArrayList::new));
 
         log.info("Статистика для метода getStats " + hits);
         return sortedHits;
