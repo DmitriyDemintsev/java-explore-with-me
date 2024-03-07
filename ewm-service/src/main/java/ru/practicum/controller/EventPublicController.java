@@ -26,7 +26,9 @@ public class EventPublicController {
     private final EventService eventService;
     private final StatsClient statsClient;
 
-    /* поиск событий по фильтрам */
+    /**
+     * поиск событий по фильтрам
+     */
     @GetMapping
     public List<EventShortDto> getListsEvents(@RequestParam(required = false) String text,
                                               @RequestParam(required = false) List<Long> categories,
@@ -43,7 +45,9 @@ public class EventPublicController {
                 null, text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size));
     }
 
-    /* подробная информация о событии */
+    /**
+     * подробная информация о событии
+     */
     @GetMapping("/{id}")
     public EventFullDto getEventById(@PathVariable("id") Long eventId, HttpServletRequest request) {
         registerView(eventId, request.getRemoteAddr());

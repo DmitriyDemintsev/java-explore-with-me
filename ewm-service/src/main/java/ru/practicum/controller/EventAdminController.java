@@ -23,7 +23,9 @@ import java.util.List;
 public class EventAdminController {
     private final EventService eventService;
 
-    /* модерация события и публикация/отклонение */
+    /**
+     * модерация события и публикация/отклонение
+     */
     @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable("eventId") Long eventId,
                                     @Valid @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
@@ -33,7 +35,9 @@ public class EventAdminController {
                 updateEventAdminRequest.getStateAction()));
     }
 
-    /* поиск события по фильтрам */
+    /**
+     * поиск события по фильтрам
+     */
     @GetMapping
     public List<EventFullDto> getListsEvents(@RequestParam(required = false) List<Long> users,
                                              @RequestParam(required = false) List<String> states,

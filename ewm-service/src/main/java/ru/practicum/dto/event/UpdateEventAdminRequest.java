@@ -26,7 +26,7 @@ public class UpdateEventAdminRequest implements Serializable {
     private Boolean paid;
     @PositiveOrZero
     private Integer participantLimit;
-    private Boolean requestModeration; //= true;
+    private Boolean requestModeration;
     private StateAction stateAction;
     @Size(min = 3, max = 120, message = "Знаков в заголовке должно быть от 3 до 120")
     private String title;

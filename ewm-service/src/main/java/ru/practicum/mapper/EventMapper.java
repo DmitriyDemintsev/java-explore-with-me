@@ -22,7 +22,7 @@ public class EventMapper {
                 newEventDto.getParticipantLimit(),
                 null,
                 newEventDto.getRequestModeration() != null ? newEventDto.getRequestModeration() : true,
-                null, //
+                null,
                 newEventDto.getTitle(),
                 null,
                 null);

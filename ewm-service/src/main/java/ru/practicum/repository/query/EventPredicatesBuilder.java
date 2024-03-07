@@ -38,4 +38,3 @@ public class EventPredicatesBuilder {
         return result;
     }
 }
-

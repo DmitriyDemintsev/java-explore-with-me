@@ -14,7 +14,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-//@Component
 @Validated
 @Slf4j
 @RestController

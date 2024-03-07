@@ -28,7 +28,9 @@ import java.util.List;
 public class EventPrivateController {
     private final EventService eventService;
 
-    /* пользователь создает событие */
+    /**
+     * пользователь создает событие
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto create(@PathVariable Long userId, @Valid @RequestBody NewEventDto newEventDto) {
@@ -36,7 +38,9 @@ public class EventPrivateController {
                 EventMapper.toCreatedEvent(newEventDto, null), newEventDto.getCategoryId()));
     }
 
-    /* пользователь редактирует событие */
+    /**
+     * пользователь редактирует событие
+     */
     @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable("userId") Long userId,
                                     @PathVariable("eventId") Long eventId,
@@ -47,7 +51,9 @@ public class EventPrivateController {
                 updateEventUserRequest.getStateAction()));
     }
 
-    /* меняем статус заявки на участие в событии */
+    /**
+     * меняем статус заявки на участие в событии
+     */
     @PatchMapping("/{eventId}/requests")
     public RequestsByStatusDto updateRequestStatusEvent(@PathVariable("userId") Long userId,
                                                         @PathVariable("eventId") Long eventId,
@@ -56,7 +62,9 @@ public class EventPrivateController {
                 eventId, request));
     }
 
-    /* получаем список событий, добавленных текущим пользователем */
+    /**
+     * получаем список событий, добавленных текущим пользователем
+     */
     @GetMapping
     public List<EventFullDto> getListsEvents(@PathVariable long userId,
                                              @RequestParam(required = false, defaultValue = "0") int from,
@@ -66,14 +74,18 @@ public class EventPrivateController {
                 null, null, from, size));
     }
 
-    /* полная информация о событии, добавленном текущим пользователем */
+    /**
+     * полная информация о событии, добавленном текущим пользователем
+     */
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(@PathVariable(required = false) Long userId,
                                      @PathVariable(required = false) Long eventId) {
         return EventMapper.toEventFullDto(eventService.getEventById(userId, eventId, null));
     }
 
-    /* список запросов на участие в событии текущего пользователя */
+    /**
+     * список запросов на участие в событии текущего пользователя
+     */
     @GetMapping("/{eventId}/requests")
     public List<RequestDto> getRequestsByEvent(@PathVariable Long userId, @PathVariable Long eventId) {
         return RequestMapper.toRequestDtoList(eventService.getRequestsByEventId(userId, eventId));

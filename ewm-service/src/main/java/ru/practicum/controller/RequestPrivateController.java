@@ -21,7 +21,9 @@ import java.util.List;
 public class RequestPrivateController {
     private final RequestService requestService;
 
-    /* создаем заявку на участие в событии */
+    /**
+     * создаем заявку на участие в событии
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RequestDto create(@PathVariable Long userId,
@@ -29,13 +31,17 @@ public class RequestPrivateController {
         return RequestMapper.toRequestDto(requestService.create(userId, eventId));
     }
 
-    /* отменяем свое участие в событии */
+    /**
+     * отменяем свое участие в событии
+     */
     @PatchMapping("/{requestId}/cancel")
     public RequestDto cancelRequest(@PathVariable Long userId, @PathVariable Long requestId) {
         return RequestMapper.toRequestDto(requestService.cansel(userId, requestId));
     }
 
-    /* смотрим, на участие в каких событиях заявились */
+    /**
+     * смотрим, на участие в каких событиях заявились
+     */
     @GetMapping
     public List<RequestDto> getRequest(@PathVariable Long userId) {
         return RequestMapper.toRequestDtoList(requestService.getRequestsByUserId(userId));

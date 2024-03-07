@@ -27,7 +27,9 @@ public class RequestServiceImpl implements RequestService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
 
-    /* создаем заявку на участие в событии */
+    /**
+     * создаем заявку на участие в событии
+     */
     @Override
     public Request create(Long userId, Long eventId) {
         User requester = userRepository.findById(userId)
@@ -45,7 +47,9 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.save(request);
     }
 
-    /* отменяем свое участие в событии */
+    /**
+     * отменяем свое участие в событии
+     */
     @Override
     public Request cansel(Long userId, Long requestId) {
         Request request = requestRepository.findById(requestId)
@@ -55,7 +59,9 @@ public class RequestServiceImpl implements RequestService {
 
     }
 
-    /* смотрим, на участие в каких событиях заявились */
+    /**
+     * смотрим, на участие в каких событиях заявились
+     */
     @Override
     public List<Request> getRequestsByUserId(Long userId) {
         User requester = userRepository.findById(userId)

@@ -181,7 +181,8 @@ public class EventServiceImpl implements EventService {
         Optional.ofNullable(paid).ifPresent(it -> builder.with("paid", "=", it));
         Optional.ofNullable(rangeStart).ifPresent(it -> builder.with("eventDate", ">=", it));
         Optional.ofNullable(rangeEnd).ifPresent(it -> builder.with("eventDate", "<=", it));
-        Optional.ofNullable(onlyAvailable).ifPresent(it -> builder.with("requestStatus", "<", new PathBuilder<>(Event.class, "event").getNumber("participantLimit", Integer.class)));
+        Optional.ofNullable(onlyAvailable).ifPresent(it -> builder.with("requestStatus", "<",
+                new PathBuilder<>(Event.class, "event").getNumber("participantLimit", Integer.class)));
         BooleanExpression expression = builder.build();
 
         if (text != null) {

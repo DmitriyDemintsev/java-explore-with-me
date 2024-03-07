@@ -34,7 +34,7 @@ public class Event {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate; // дата проведения события
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "initiator_id") // проверяем тут
+    @JoinColumn(name = "initiator_id")
     private User initiator; // кто создает событие
     @Embedded
     private Location location; // где проходит (координаты места)
