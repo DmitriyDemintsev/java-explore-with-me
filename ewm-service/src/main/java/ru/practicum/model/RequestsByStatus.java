@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @ToString
-public class RequestsByStatus implements Serializable {
+public class RequestsByStatus {
     private List<Request> confirmedRequests;
     private List<Request> rejectedRequests;
 }
