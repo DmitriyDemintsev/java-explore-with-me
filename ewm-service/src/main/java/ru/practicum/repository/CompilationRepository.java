@@ -13,8 +13,9 @@ import java.util.List;
 public interface CompilationRepository extends JpaRepository<Compilation, Long> {
 
     @Transactional
-    void delete(long id);
+    Compilation save(Compilation compilation);
+
+    Compilation getCompilationById(Long id);
 
     List<Compilation> findAllByPinnedIs(boolean pinned, PageRequest page);
-
 }

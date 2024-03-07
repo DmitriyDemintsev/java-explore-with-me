@@ -1,11 +1,13 @@
 package ru.practicum.repository.query;
 
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.*;
 import lombok.AllArgsConstructor;
 import org.hibernate.query.criteria.internal.ValueHandlerFactory;
 import ru.practicum.model.Category;
 import ru.practicum.model.Event;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @AllArgsConstructor
@@ -45,14 +47,35 @@ public class EventPredicate {
                 case "!=":
                     return path.ne(value);
             }
-        }
-        else if (criteria.getValue() instanceof String) {
+        } else if (criteria.getValue() instanceof String) {
             StringPath path = entityPath.getString(criteria.getKey());
             switch (criteria.getOperation()) {
                 case "=":
                     return path.containsIgnoreCase(criteria.getValue().toString());
                 case "~":
                     return path.like('%' + criteria.getValue().toString().trim() + '%');
+            }
+        } else if (criteria.getValue() instanceof LocalDateTime) {
+            DateTimePath<LocalDateTime> path = entityPath.getDateTime(criteria.getKey(), LocalDateTime.class);
+            LocalDateTime value = (LocalDateTime) criteria.getValue();
+            switch (criteria.getOperation()) {
+                case "<":
+                    return path.lt(value);
+                case ">":
+                    return path.gt(value);
+                case "=":
+                    return path.eq(value);
+            }
+        } else if (criteria.getValue() instanceof SimplePath) {
+            NumberPath<Integer> path = entityPath.getNumber(criteria.getKey(), Integer.class);
+            Expression<Integer> value = (Expression<Integer>) criteria.getValue();
+            switch (criteria.getOperation()) {
+                case "<":
+                    return path.lt(value);
+                case ">":
+                    return path.gt(value);
+                case "=":
+                    return path.eq(value);
             }
         } else {
             SimplePath<Object> path = entityPath.getSimple(criteria.getKey(), Object.class);

@@ -3,7 +3,6 @@ package ru.practicum.dto.event;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.practicum.dto.location.LocationDto;
 import ru.practicum.enums.StateAction;
 
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class UpdateEventUserRequest implements Serializable {
 
     @Size(min = 20, max = 2000, message = "Знаков в аннотации должно быть от 20 до 2000")
@@ -28,7 +26,7 @@ public class UpdateEventUserRequest implements Serializable {
     private Boolean paid;
     @PositiveOrZero
     private Integer participantLimit;
-    private Boolean requestModeration = true;
+    private Boolean requestModeration; //= true;
     private StateAction stateAction;
     @Size(min = 3, max = 120, message = "Знаков в заголовке должно быть от 3 до 120")
     private String title;

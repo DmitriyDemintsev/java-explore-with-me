@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateCompilationRequest implements Serializable {
     private List<Long> events;
-    private Boolean pinned;
-    @Size(max = 50, message = "Количество символов в заголовке - до 50")
+    private boolean pinned;
+    @Size(min = 1, max = 50, message = "Количество символов в заголовке - до 50")
     private String title;
 }

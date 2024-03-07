@@ -24,7 +24,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     @Transactional
-    public Stats save(Stats stats, String appName) {
+    public Stats create(Stats stats, String appName) {
         Application app = applicationRepository.findByApp(appName)
                 .orElseGet(() -> applicationRepository.save(new Application(null, appName)));
         stats.setApp(app);

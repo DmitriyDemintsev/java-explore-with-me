@@ -3,23 +3,21 @@ package ru.practicum.service.request;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.enums.EventState;
 import ru.practicum.enums.RequestStatus;
 import ru.practicum.exception.EventNotFoundException;
 import ru.practicum.exception.RequestAlreadyExistException;
 import ru.practicum.exception.RequestNotFoundException;
 import ru.practicum.exception.UserNotFoundException;
 import ru.practicum.model.*;
-import ru.practicum.mapper.RequestMapper;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.RequestRepository;
 import ru.practicum.repository.UserRepository;
-import ru.practicum.service.event.EventService;
-import ru.practicum.service.user.UserService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,11 +30,19 @@ public class RequestServiceImpl implements RequestService {
     /* создаем заявку на участие в событии */
     @Override
     public Request create(Long userId, Long eventId) {
-        userRepository.findById(userId)
+        User requester = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        eventRepository.findById(eventId)
+        Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Событие не найдено"));
-        return requestRepository.save(userId, eventId);
+        checkRequest(requester, event);
+        Request request = new Request(
+                null,
+                LocalDateTime.now(),
+                event,
+                requester,
+                event.getParticipantLimit() == 0 ? RequestStatus.CONFIRMED : RequestStatus.PENDING
+        );
+        return requestRepository.save(request);
     }
 
     /* отменяем свое участие в событии */
@@ -52,13 +58,17 @@ public class RequestServiceImpl implements RequestService {
     /* смотрим, на участие в каких событиях заявились */
     @Override
     public List<Request> getRequestsByUserId(Long userId) {
-        List<Request> requests = requestRepository.findAllByRequesterId(userId);
+        User requester = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+        List<Request> requests = requestRepository.findAllByRequester(requester);
         return requests;
     }
 
     @Override
     public List<Request> getRequestsByEventId(Long eventId) {
-        List<Request> requests = requestRepository.findAllByEventId(eventId);
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Событие не найдено"));
+        List<Request> requests = requestRepository.findAllByEvent(event);
         return requests;
     }
 
@@ -66,15 +76,18 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     public RequestsByStatus updateRequestsStatusByEvent(RequestStatusUpdate statusUpdate, Event event) {
         int space = getAvailableSpace(event);
-        RequestStatus requestStatus = RequestStatus.valueOf(statusUpdate.getRequestStatus().toString());
+        RequestStatus requestStatus = RequestStatus.valueOf(statusUpdate.getStatus().toString());
         List<Long> requestIds = statusUpdate.getRequestIds();
         List<Request> requests = requestRepository.findAllById(requestIds);
-        requests = requestRepository.saveAll(modifyStatusRequests(requests, space, requestStatus));
+        requests = modifyStatusRequests(requests, space, requestStatus);
         return toRequestsByStatus(requests);
     }
 
-    private Integer getAvailableSpace(Event event) {
+    public Integer getAvailableSpace(Event event) {
         Integer limit = event.getParticipantLimit();
+        if (limit == 0) {
+            throw new RequestAlreadyExistException("Собыьие не имеет ограничений на количество участников");
+        }
         List<Request> confirmedRequest = requestRepository.getRequestByStatusIs(RequestStatus.CONFIRMED, event);
         int availableSpace = limit - confirmedRequest.size();
         if (availableSpace == 0) {
@@ -84,20 +97,29 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private List<Request> modifyStatusRequests(List<Request> requests, int space, RequestStatus requestStatus) {
+        final List<Request> result = new ArrayList<>();
         for (Request request : requests) {
-            if (!Objects.equals(request.getRequestStatus(), RequestStatus.PENDING)) {
+            Request update = new Request(
+                    request.getId(),
+                    request.getCreated(),
+                    request.getEvent(),
+                    request.getRequester(),
+                    request.getRequestStatus()
+            );
+            if (!request.getRequestStatus().equals(RequestStatus.PENDING)) {
                 throw new RequestAlreadyExistException("Некорректный лимит участников");
             }
             if (space > 0) {
-                request.setRequestStatus(requestStatus);
+                update.setRequestStatus(requestStatus);
                 if (Objects.equals(requestStatus, RequestStatus.CONFIRMED)) {
                     space = space - 1;
                 }
             } else {
-                request.setRequestStatus(RequestStatus.REJECTED);
+                update.setRequestStatus(RequestStatus.REJECTED);
             }
+            result.add(requestRepository.save(update));
         }
-        return requests;
+        return new ArrayList<>(result);
     }
 
     public static RequestsByStatus toRequestsByStatus(List<Request> requests) {
@@ -112,5 +134,20 @@ public class RequestServiceImpl implements RequestService {
         }
         return new RequestsByStatus(confirmedRequests, rejectedRequests);
 
+    }
+
+    private void checkRequest(User requester, Event event) {
+        if (event.getInitiator().getId() == requester.getId()) {
+            throw new RequestAlreadyExistException("Вы являетесь организатором события, запрос на участие не требуется");
+        }
+        if (event.getEventState() != EventState.PUBLISHED) {
+            throw new RequestAlreadyExistException("Нет такого события среди опубликованных");
+        }
+        List<Request> requests = requestRepository.findAllByEvent(event);
+        for (Request request : requests) {
+            if (request.getEvent().getId().equals(event.getId())) {
+                throw new RequestAlreadyExistException("Такая заявка на участие в этом событии уже существует");
+            }
+        }
     }
 }

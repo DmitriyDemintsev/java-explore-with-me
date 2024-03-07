@@ -2,6 +2,7 @@ package ru.practicum.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,18 +22,20 @@ public class CategoryAdminController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public CategoryDto createUser(@Valid @RequestBody CategoryDto categoryDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public CategoryDto create(@Valid @RequestBody CategoryDto categoryDto) {
         return CategoryMapper.toCategoryDto(categoryService.create(CategoryMapper.toCategory(categoryDto, null)));
     }
 
     @PatchMapping("/{id}")
-    public CategoryDto updateUser(@Valid @RequestBody CategoryDto categoryDto,
-                              @PathVariable("id") Long id) {
-        return CategoryMapper.toCategoryDto(categoryService.update(CategoryMapper.toCategory(categoryDto, id)));
+    public CategoryDto update(@Valid @RequestBody CategoryDto categoryDto,
+                              @PathVariable("id") Long catId) {
+        return CategoryMapper.toCategoryDto(categoryService.update(CategoryMapper.toCategory(categoryDto, catId)));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable("id") Integer id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable("id") Integer id) {
         categoryService.delete(id);
     }
 }

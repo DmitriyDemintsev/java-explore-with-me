@@ -2,14 +2,15 @@ package ru.practicum.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.request.RequestDto;
-import ru.practicum.dto.request.RequestsByStatusDto;
 import ru.practicum.mapper.RequestMapper;
-
 import ru.practicum.service.request.RequestService;
+
+import java.util.List;
 
 @Component
 @Validated
@@ -22,8 +23,9 @@ public class RequestPrivateController {
 
     /* создаем заявку на участие в событии */
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public RequestDto create(@PathVariable Long userId,
-                                   @PathVariable Long eventId) {
+                             @RequestParam Long eventId) {
         return RequestMapper.toRequestDto(requestService.create(userId, eventId));
     }
 
@@ -35,7 +37,7 @@ public class RequestPrivateController {
 
     /* смотрим, на участие в каких событиях заявились */
     @GetMapping
-    public RequestsByStatusDto getRequest (@PathVariable Long userId) {
-        return RequestMapper.toRequestsByStatusDto(requestService.getRequestsByUserId(userId));
+    public List<RequestDto> getRequest(@PathVariable Long userId) {
+        return RequestMapper.toRequestDtoList(requestService.getRequestsByUserId(userId));
     }
 }

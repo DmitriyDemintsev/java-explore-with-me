@@ -6,21 +6,21 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.enums.RequestStatus;
 import ru.practicum.model.Event;
 import ru.practicum.model.Request;
+import ru.practicum.model.User;
 
 import java.util.List;
 
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
 
-    Request save(Long userId, Long eventId);
+    int countByEventAndRequestStatus(Event event, RequestStatus statusRequest);
 
-    int countByEventAndStatusRequest(Event event, RequestStatus statusRequest);
+    List<Request> findAllByRequester(User requester);
 
-    List<Request> findAllByRequesterId(Long userId);
+    List<Request> findAllByEvent(Event event);
 
-    List<Request> findAllByEventId(Long eventId);
-
-    @Query("select r from Request r where r.status = :status and r.event = :event")
+    @Query("select r from Request r where r.requestStatus = :status and r.event = :event")
     List<Request> getRequestByStatusIs(RequestStatus status, Event event);
 
+    Request findByRequesterAndEvent(User requester, Event event);
 }

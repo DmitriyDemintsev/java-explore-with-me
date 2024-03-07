@@ -8,13 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.exception.CategoryNotFoundException;
 import ru.practicum.exception.CategoryValidationException;
 import ru.practicum.model.Category;
 import ru.practicum.repository.CategoryRepository;
 import ru.practicum.service.category.CategoryServiceImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +33,7 @@ public class CategoryServiceImplTest {
 
     @Test
     void create_whenCategoryNameValid_thenSavedCategory() {
-        Category saveCategory = new Category(0, "Концерты");
+        Category saveCategory = new Category(0L, "Концерты");
         when(categoryRepository.save(saveCategory)).thenReturn(saveCategory);
 
         Category actualCategory = categoryService.create(saveCategory);
@@ -44,7 +44,7 @@ public class CategoryServiceImplTest {
 
     @Test
     void create_whenCategoryNameNotValid_thenCategoryValidationException() {
-        Category saveCategory = new Category(0, "");
+        Category saveCategory = new Category(0L, "");
 
         assertThrows(CategoryValidationException.class, () -> categoryService.create(saveCategory));
         verify(categoryRepository, never()).save(saveCategory);
@@ -52,7 +52,7 @@ public class CategoryServiceImplTest {
 
     @Test
     void update_whenCategoryFound_thenUpdatedOnlyAvailableFields() {
-        int categoryId = 0;
+        Long categoryId = 0L;
         Category oldCategory = new Category();
         oldCategory.setId(categoryId);
         oldCategory.setName("Концерты");
@@ -73,7 +73,7 @@ public class CategoryServiceImplTest {
 
     @Test
     void update_whenCategoryNameNotValid_thenCategoryValidationException() {
-        int categoryId = 0;
+        Long categoryId = 0L;
         Category oldCategory = new Category();
         oldCategory.setId(categoryId);
         oldCategory.setName("Концерты");
@@ -90,7 +90,7 @@ public class CategoryServiceImplTest {
 
     @Test
     void deleteUser() {
-        Category category = new Category(0, "Концерты");
+        Category category = new Category(0L, "Концерты");
 
         categoryRepository.deleteById(category.getId());
         assertNull(categoryRepository.getById(category.getId()));
@@ -98,7 +98,7 @@ public class CategoryServiceImplTest {
 
     @Test
     void getCategoryById_whenCategoryFound_thenReturnedCategory() {
-        int categoryId = 0;
+        Long categoryId = 0L;
         Category expectedCategory = new Category();
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(expectedCategory));
 
@@ -109,7 +109,7 @@ public class CategoryServiceImplTest {
 
     @Test
     void getCategoryById_whenCategoryNotFound_thenCategoryNotFoundException() {
-        int categoryId = 0;
+        Long categoryId = 0L;
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
         assertThrows(CategoryNotFoundException.class, () -> categoryService.getCategoryById(categoryId));
@@ -117,12 +117,12 @@ public class CategoryServiceImplTest {
 
     @Test
     void getCategories() {
-        Category fistCategory = new Category(0, "Концерты");
-        Category secondCategory = new Category(1, "Выставки");
-        Category thirdCategory = new Category(2, "Кино");
+        Category fistCategory = new Category(0L, "Концерты");
+        Category secondCategory = new Category(1L, "Выставки");
+        Category thirdCategory = new Category(2L, "Кино");
 
         List<Category> expectedCategories = List.of(fistCategory, secondCategory, thirdCategory);
-        when(categoryRepository.findCategories(any())).thenReturn(new PageImpl<>(expectedCategories));
+        when(categoryRepository.findAll((Pageable) any())).thenReturn(new PageImpl<>(expectedCategories));
 
         List<Category> actualСategories = categoryService.getCategories(0, 10);
 

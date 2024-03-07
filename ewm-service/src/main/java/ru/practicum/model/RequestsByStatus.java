@@ -1,7 +1,6 @@
 package ru.practicum.model;
 
 import lombok.*;
-import ru.practicum.dto.request.RequestDto;
 
 import java.io.Serializable;
 import java.util.List;

@@ -3,6 +3,7 @@ package ru.practicum.model;
 import lombok.*;
 import ru.practicum.enums.RequestStatus;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,6 +14,8 @@ import java.util.List;
 @Builder
 @ToString
 public class RequestStatusUpdate implements Serializable {
+    @NotNull
     private List<Long> requestIds;
-    private RequestStatus requestStatus;
+    @NotNull
+    private RequestStatus status;
 }

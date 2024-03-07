@@ -2,13 +2,12 @@ package ru.practicum;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.exception.UserValidationException;
 import ru.practicum.model.User;
 import ru.practicum.repository.UserRepository;
@@ -41,7 +40,7 @@ public class UserServiceImplTest {
 
     @Test
     void create_whenUserNameNotValid_thenUserValidationException() {
-        User savedUser = new User(0L, "", "ivai@ivanov.ru");
+        User savedUser = new User(0L, "", "ivan@ivanov.ru");
 
         assertThrows(UserValidationException.class, () -> userService.create(savedUser));
         verify(userRepository, never()).save(savedUser);
@@ -74,7 +73,7 @@ public class UserServiceImplTest {
         List<Long> ids = List.of(0L, 3L, 4L, 5L, 8L);
 
         List<User> expectedUsers = List.of(fistUser, fourthUser, fifthUser, sixthUser, ninthUser);
-        when((userRepository.findAllByIds(anyList(), any()))).thenReturn(new PageImpl<>(expectedUsers));
+        when((userRepository.findAllByIdIn(anyList(), any()))).thenReturn(new PageImpl<>(expectedUsers));
 
         List<User> actualUsers = userService.getUsers(ids, 0, 10);
         assertEquals(expectedUsers, actualUsers);
@@ -92,7 +91,7 @@ public class UserServiceImplTest {
 
         List<User> expectedUsers = List.of(fistUser, secondUser, thirdUser, fourthUser, fifthUser);
 
-        when((userRepository.findAllUsers(any()))).thenReturn(new PageImpl<>(expectedUsers));
+        when((userRepository.findAll((Pageable) any()))).thenReturn(new PageImpl<>(expectedUsers));
 
         List<User> actualUsers = userService.getUsers(ids, 0, 10);
         assertEquals(expectedUsers, actualUsers);

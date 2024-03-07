@@ -7,11 +7,12 @@ import ru.practicum.enums.EventState;
 import ru.practicum.model.Event;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPredicateExecutor<Event> {
 
-    Event save (Long userId, Event event);
+    List<Event> findByEventState(EventState eventState);
 
-    List<String> findByEventState(EventState eventState);
+    List<Event> findAllByIdIn(Set<Long> eventIds);
 }

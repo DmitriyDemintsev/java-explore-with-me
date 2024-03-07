@@ -2,7 +2,9 @@ package ru.practicum.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.dto.location.LocationDto;
 
 import javax.persistence.Embedded;
@@ -35,7 +37,7 @@ public class NewEventDto implements Serializable {
     private boolean paid;
     @PositiveOrZero
     private int participantLimit;
-    private boolean requestModeration = true;
+    private Boolean requestModeration;
     @NotBlank
     @Size(min = 3, max = 120, message = "Знаков в заголовке должно быть от 3 до 120")
     private String title;

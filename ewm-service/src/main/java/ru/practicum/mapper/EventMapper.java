@@ -1,8 +1,6 @@
 package ru.practicum.mapper;
 
-import ru.practicum.dto.event.EventFullDto;
-import ru.practicum.dto.event.EventShortDto;
-import ru.practicum.dto.event.NewEventDto;
+import ru.practicum.dto.event.*;
 import ru.practicum.model.Event;
 
 import java.util.ArrayList;
@@ -23,32 +21,59 @@ public class EventMapper {
                 newEventDto.isPaid(),
                 newEventDto.getParticipantLimit(),
                 null,
-                newEventDto.isRequestModeration(),
-                null,
+                newEventDto.getRequestModeration() != null ? newEventDto.getRequestModeration() : true,
+                null, //
                 newEventDto.getTitle(),
                 null,
                 null);
         return event;
     }
 
-    public static Event byUpdateEvent(EventFullDto eventFullDto, Long id) {
+    public static Event byUpdateEventForAdmin(UpdateEventAdminRequest updateEventAdminRequest, Long eventId) {
         Event event = new Event(
-                id,
-                eventFullDto.getAnnotation(),
-                CategoryMapper.toCategory(eventFullDto.getCategory(), id),
-                eventFullDto.getCreatedOn(),
-                eventFullDto.getDescription(),
-                eventFullDto.getEventDate(),
+                eventId,
+                updateEventAdminRequest.getAnnotation(),
                 null,
-                LocationMapper.toLocation(eventFullDto.getLocation()),
-                eventFullDto.getPaid(),
-                eventFullDto.getParticipantLimit(),
-                eventFullDto.getPublishedOn(),
-                eventFullDto.getRequestModeration(),
-                eventFullDto.getEventState(),
-                eventFullDto.getTitle(),
-                eventFullDto.getConfirmedRequests(),
-                eventFullDto.getViews());
+                null,
+                updateEventAdminRequest.getDescription(),
+                updateEventAdminRequest.getEventDate(),
+                null,
+                updateEventAdminRequest.getLocation() != null
+                        ? LocationMapper.toLocation(updateEventAdminRequest.getLocation())
+                        : null,
+                updateEventAdminRequest.getPaid(),
+                updateEventAdminRequest.getParticipantLimit(),
+                null,
+                updateEventAdminRequest.getRequestModeration(),
+                null,
+                updateEventAdminRequest.getTitle(),
+                null,
+                null
+        );
+        return event;
+    }
+
+    public static Event byUpdateEventForUser(UpdateEventUserRequest updateEventUserRequest, Long eventId) {
+        Event event = new Event(
+                eventId,
+                updateEventUserRequest.getAnnotation(),
+                null,
+                null,
+                updateEventUserRequest.getDescription(),
+                updateEventUserRequest.getEventDate(),
+                null,
+                updateEventUserRequest.getLocation() != null
+                        ? LocationMapper.toLocation(updateEventUserRequest.getLocation())
+                        : null,
+                updateEventUserRequest.getPaid(),
+                updateEventUserRequest.getParticipantLimit(),
+                null,
+                updateEventUserRequest.getRequestModeration(),
+                null,
+                updateEventUserRequest.getTitle(),
+                null,
+                null
+        );
         return event;
     }
 
@@ -70,7 +95,7 @@ public class EventMapper {
                 event.getEventState(),
                 event.getTitle(),
                 event.getViews());
-//                event.getComments());
+//                event.getComments()); // для фичи
         return eventFullDto;
     }
 
@@ -85,27 +110,21 @@ public class EventMapper {
                 event.getTitle(),
                 event.getConfirmedRequests(),
                 event.getViews());
-//                event.getComments());
+//                event.getComments());  // для фичи
         return eventShortDto;
     }
 
-    public static NewEventDto toNewEventDto(Event event) {
-        NewEventDto newEventDto = new NewEventDto(
-                event.getAnnotation(),
-                event.getCategory().getId(),
-                event.getDescription(),
-                event.getEventDate(),
-                LocationMapper.toLocationDto(event.getLocation()),
-                event.getPaid(),
-                event.getParticipantLimit(),
-                event.getRequestModeration(),
-                event.getTitle());
-        return newEventDto;
+    public static List<EventShortDto> toShortDtos(List<Event> events) {
+        List<EventShortDto> shortsDtos = new ArrayList<>();
+        for (Event event : events) {
+            shortsDtos.add(toEventShortDto(event));
+        }
+        return shortsDtos;
     }
 
     public static List<EventFullDto> toEventFullDtoList(Iterable<Event> events) {
         List<EventFullDto> result = new ArrayList<>();
-        for (Event event: events) {
+        for (Event event : events) {
             result.add(toEventFullDto(event));
         }
         return result;

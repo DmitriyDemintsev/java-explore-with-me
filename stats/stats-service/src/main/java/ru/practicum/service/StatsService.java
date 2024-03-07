@@ -11,7 +11,7 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public interface StatsService {
     @Transactional
-    Stats save(Stats stats, String appName);
+    Stats create(Stats stats, String appName);
 
     Map<Hits, Integer> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique);
 }

@@ -1,7 +1,10 @@
 package ru.practicum.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.practicum.enums.RequestStatus;
 
 import javax.persistence.*;
@@ -28,6 +31,6 @@ public class Request {
     @JoinColumn(name = "user_id")
     private User requester; // кто заявляется
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status") // nullable = false
     private RequestStatus requestStatus; // статус заявки
 }

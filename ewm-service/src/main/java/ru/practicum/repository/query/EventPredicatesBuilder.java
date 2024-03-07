@@ -22,9 +22,6 @@ public class EventPredicatesBuilder {
     }
 
     public BooleanExpression build() {
-        if (params.isEmpty()) {
-            return null;
-        }
 
         List<BooleanExpression> predicates = params.stream()
                 .map(param -> {

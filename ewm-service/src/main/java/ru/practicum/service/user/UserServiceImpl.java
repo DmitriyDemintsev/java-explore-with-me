@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.exception.UserAlreadyExistException;
 import ru.practicum.exception.UserNotFoundException;
 import ru.practicum.exception.UserValidationException;
 import ru.practicum.model.User;
@@ -22,10 +23,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User create(User user) {
-        if (user.getName() == null || user.getName().isEmpty()) {
+        List<User> users = userRepository.findAll();
+        for (User user1 : users) {
+            if (user1.getEmail().equals(user.getEmail())) {
+                throw new UserAlreadyExistException("Пользователь с таким Email уже сущестует");
+            }
+        }
+        if (user.getName() == null || user.getName().isBlank()) {
             throw new UserValidationException("Отсутствует имя пользователя");
         }
-        if (user.getEmail() == null || user.getEmail().isEmpty()) {
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
             throw new UserValidationException("Не указан email");
         }
         user = userRepository.save(user);
@@ -47,9 +54,9 @@ public class UserServiceImpl implements UserService {
     public List<User> getUsers(List<Long> ids, int from, int size) {
         List<User> users;
         if ((ids == null || ids.isEmpty())) {
-            users = userRepository.findAllUsers(getPageableAsc(from, size)).getContent();
+            users = userRepository.findAll(getPageableAsc(from, size)).getContent();
         } else {
-            users = userRepository.findAllByIds(ids, getPageableAsc(from, size)).getContent();
+            users = userRepository.findAllByIdIn(ids, getPageableAsc(from, size)).getContent();
         }
         return users;
     }

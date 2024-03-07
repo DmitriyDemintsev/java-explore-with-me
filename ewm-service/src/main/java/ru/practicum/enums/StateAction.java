@@ -1,6 +1,7 @@
 package ru.practicum.enums;
 
 public enum StateAction {
+
     /**
      * новое состояние - результат модерации или действия user'а
      */

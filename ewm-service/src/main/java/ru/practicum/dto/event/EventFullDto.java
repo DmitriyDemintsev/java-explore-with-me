@@ -1,5 +1,6 @@
 package ru.practicum.dto.event;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class EventFullDto implements Serializable {
     private Integer confirmedRequests;
     private LocalDateTime createdOn;
     private String description;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private UserShortDto initiator;
     @Embedded
@@ -33,5 +35,5 @@ public class EventFullDto implements Serializable {
     private EventState eventState;
     private String title;
     private Integer views;
-//    private Long comments;
+//    private Long comments;  // для фичи
 }

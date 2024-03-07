@@ -39,11 +39,10 @@ services:
 
   ewm-db:
     image: postgres:16.1
-    container_name: ewmService
+    container_name: ewmservice
     ports:
       - "6541:5432"
     environment:
       - POSTGRES_DB=ewmService
       - POSTGRES_USER=dmitriydemintsev
       - POSTGRES_PASSWORD=root
-

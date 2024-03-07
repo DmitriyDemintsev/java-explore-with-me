@@ -2,11 +2,10 @@ package ru.practicum.dto.compilation;
 
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,10 +14,9 @@ import java.util.Objects;
 @Builder
 @ToString
 public class NewCompilationDto implements Serializable {
-    private List<Long> events;
-    private boolean pinned;
-    @NotBlank
-    @Size(max = 50, message = "Количество символов в заголовке - до 50")
+    private Set<Long> events;
+    private Boolean pinned;
+    @Size(min = 1, max = 50, message = "Количество символов в заголовке - не более 50")
     private String title;
 
     public Boolean getPinned() {
