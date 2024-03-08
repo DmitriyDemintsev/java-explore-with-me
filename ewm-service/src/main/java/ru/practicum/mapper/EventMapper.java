@@ -95,7 +95,6 @@ public class EventMapper {
                 event.getEventState(),
                 event.getTitle(),
                 event.getViews());
-//                event.getComments()); // для фичи
         return eventFullDto;
     }
 
@@ -110,7 +109,6 @@ public class EventMapper {
                 event.getTitle(),
                 event.getConfirmedRequests(),
                 event.getViews());
-//                event.getComments());  // для фичи
         return eventShortDto;
     }
 

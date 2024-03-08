@@ -2,9 +2,7 @@ package ru.practicum.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Formula;
 import org.springframework.context.annotation.Lazy;
 import ru.practicum.enums.EventState;
@@ -13,7 +11,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Entity
@@ -58,6 +57,4 @@ public class Event {
     private Integer confirmedRequests; // подтвержденные заявки на участие
     @Transient
     private Integer views; // количество просмотров
-//    @Transient
-//    private Long comments; // для фичи
 }

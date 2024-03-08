@@ -24,5 +24,4 @@ public class EventShortDto implements Serializable {
     private String title;
     private Integer confirmedRequests;
     private Integer views;
-//    private Long comments;  // для фичи
 }

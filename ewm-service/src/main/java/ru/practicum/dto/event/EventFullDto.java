@@ -35,5 +35,4 @@ public class EventFullDto implements Serializable {
     private EventState eventState;
     private String title;
     private Integer views;
-//    private Long comments;  // для фичи
 }
