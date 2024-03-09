@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   stats-server:
-    build: stats-service/
+    build: stats/stats-service/
     image: "server"
     container_name: server
     ports:
@@ -23,9 +23,26 @@ services:
       - POSTGRES_USER=dmitriydemintsev
       - POSTGRES_PASSWORD=root
 
-#  ewm-service:
-#    ports:
-#      - "8080:8080"
-#
-#  ewm-db:
-#    image: postgres:16.1
+  ewm-service:
+    build: ewm-service/
+    image: "service"
+    container_name: service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ewm-db
+    environment:
+      - STATS_SERVICE_URL=http://stats-server:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewmService
+      - SPRING.DATASOURCE.USERNAME=dmitriydemintsev
+      - SPRING.DATASOURCE.PASSWORD=root
+
+  ewm-db:
+    image: postgres:16.1
+    container_name: ewmservice
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=ewmService
+      - POSTGRES_USER=dmitriydemintsev
+      - POSTGRES_PASSWORD=root
