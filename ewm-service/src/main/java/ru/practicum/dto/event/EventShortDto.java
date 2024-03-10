@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.dto.category.CategoryDto;
+import ru.practicum.dto.comment.CommentDto;
 import ru.practicum.dto.user.UserShortDto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -24,4 +26,5 @@ public class EventShortDto implements Serializable {
     private String title;
     private Integer confirmedRequests;
     private Integer views;
+    private List<CommentDto> comments;  // для фичи
 }

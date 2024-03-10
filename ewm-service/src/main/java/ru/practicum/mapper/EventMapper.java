@@ -25,7 +25,9 @@ public class EventMapper {
                 null,
                 newEventDto.getTitle(),
                 null,
-                null);
+                null,
+                null
+        );
         return event;
     }
 
@@ -47,6 +49,7 @@ public class EventMapper {
                 updateEventAdminRequest.getRequestModeration(),
                 null,
                 updateEventAdminRequest.getTitle(),
+                null,
                 null,
                 null
         );
@@ -72,6 +75,7 @@ public class EventMapper {
                 null,
                 updateEventUserRequest.getTitle(),
                 null,
+                null,
                 null
         );
         return event;
@@ -94,7 +98,9 @@ public class EventMapper {
                 event.getRequestModeration(),
                 event.getEventState(),
                 event.getTitle(),
-                event.getViews());
+                event.getViews(),
+                event.getComments() != null ? CommentMapper.toCommentDtoList(event.getComments()) : null
+                );
         return eventFullDto;
     }
 
@@ -108,7 +114,9 @@ public class EventMapper {
                 event.getPaid(),
                 event.getTitle(),
                 event.getConfirmedRequests(),
-                event.getViews());
+                event.getViews(),
+                event.getComments() != null ? CommentMapper.toCommentDtoList(event.getComments()) : null
+        );
         return eventShortDto;
     }
 

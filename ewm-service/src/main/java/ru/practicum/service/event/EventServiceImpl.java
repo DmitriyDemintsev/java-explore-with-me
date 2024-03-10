@@ -20,6 +20,7 @@ import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.UserRepository;
 import ru.practicum.repository.query.EventPredicatesBuilder;
 import ru.practicum.service.category.CategoryService;
+import ru.practicum.service.comment.CommentService;
 import ru.practicum.service.request.RequestService;
 import ru.practicum.service.user.UserService;
 
@@ -34,12 +35,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
+    private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
     private final CategoryService categoryService;
+    private final CommentService commentService;
     private final RequestService requestService;
-    private final CategoryRepository categoryRepository;
+    private final UserService userService;
     private final StatsClient statsClient;
 
     @Override
@@ -199,6 +201,7 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findAll(expression, getPageable(from, size, sort)).getContent();
         for (Event event : events) {
             enrichEvent(event);
+            addComment(event);
         }
         return events;
     }
@@ -279,5 +282,10 @@ public class EventServiceImpl implements EventService {
                 throw new EventValidationException("Дата предстоящего события на может быть в настоящем");
             }
         }
+    }
+
+    private void addComment(Event event) {
+        List<Comment> comments = commentService.getComments(event.getId());
+        event.setComments(comments);
     }
 }
