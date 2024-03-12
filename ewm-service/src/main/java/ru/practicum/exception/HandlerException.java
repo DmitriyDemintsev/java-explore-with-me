@@ -40,6 +40,12 @@ public class HandlerException {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST) //ошибка 400
+    public ErrorResponse handleCommentValidationException(final CommentValidationException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST) //ошибка 400
     public ErrorResponse handleCompilationValidationException(final CompilationValidationException e) {
         return new ErrorResponse(e.getMessage());
     }

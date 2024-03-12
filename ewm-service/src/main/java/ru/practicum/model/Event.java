@@ -9,6 +9,7 @@ import ru.practicum.enums.EventState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Getter
@@ -57,4 +58,7 @@ public class Event {
     private Integer confirmedRequests; // подтвержденные заявки на участие
     @Transient
     private Integer views; // количество просмотров
+    @Transient
+    private List<Comment> comments; // для фичи
 }
+
